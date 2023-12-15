@@ -1,5 +1,6 @@
 package com.example.layeredarchitecture.controller;
 
+import com.example.layeredarchitecture.Dao.CustomerDAO;
 import com.example.layeredarchitecture.Dao.CustomerDAOImpl;
 import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.CustomerDTO;
@@ -38,6 +39,8 @@ public class ManageCustomersFormController {
     public TableView<CustomerTM> tblCustomers;
     public JFXButton btnAddNewCustomer;
 
+    private CustomerDAO customerDAO = new CustomerDAOImpl();
+
     public void initialize() {
         tblCustomers.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("id"));
         tblCustomers.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -69,7 +72,6 @@ public class ManageCustomersFormController {
         tblCustomers.getItems().clear();
         /*Get all customers*/
         try {
-            CustomerDAOImpl customerDAO = new CustomerDAOImpl();
             ArrayList<CustomerDTO> dtilist=customerDAO.getAllCustomers();
 
             for (CustomerDTO dto : dtilist) {
@@ -145,7 +147,6 @@ public class ManageCustomersFormController {
                     new Alert(Alert.AlertType.ERROR, id + " already exists").show();
                 }
 
-                CustomerDAOImpl customerDAO = new CustomerDAOImpl();
                 boolean isSaved = customerDAO.saveCustomer(id,name, address);
 
 //                Connection connection = DBConnection.getDbConnection().getConnection();
@@ -173,7 +174,6 @@ public class ManageCustomersFormController {
                 }
 //
 
-                CustomerDAOImpl customerDAO = new CustomerDAOImpl();
                 boolean isSaved= customerDAO.updateCustomer(id,name, address);
 
 
@@ -194,7 +194,7 @@ public class ManageCustomersFormController {
 
 
     boolean existCustomer(String id) throws SQLException, ClassNotFoundException {
-        CustomerDAOImpl customerDAO = new CustomerDAOImpl();
+
         return customerDAO.existCustomer(id);
     }
 
@@ -211,7 +211,6 @@ public class ManageCustomersFormController {
 //            pstm.setString(1, id);
 //            pstm.executeUpdate();
 
-            CustomerDAOImpl customerDAO = new CustomerDAOImpl();
             boolean isDelete = customerDAO.deleteCustomer(id);
 
             if (isDelete) {
@@ -237,10 +236,8 @@ public class ManageCustomersFormController {
 //            } else {
 //                return "C00-001";
 //            }
-
-            CustomerDAOImpl customerDAO = new CustomerDAOImpl();
             return customerDAO.genarateId();
-            
+
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to generate a new id " + e.getMessage()).show();
         } catch (ClassNotFoundException e) {
