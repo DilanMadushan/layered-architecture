@@ -1,21 +1,33 @@
 package com.example.layeredarchitecture.Dao;
 
-import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.ItemDTO;
+import com.example.layeredarchitecture.model.OrderDetailDTO;
+import javafx.collections.ObservableList;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface ItemDAO {
-    public ArrayList<ItemDTO> loadAllItems() throws SQLException, ClassNotFoundException ;
+    ArrayList<ItemDTO> loadAllItems() throws SQLException, ClassNotFoundException ;
 
-    public boolean deleteItem(String code) throws SQLException, ClassNotFoundException;
+    boolean deleteItem(String code) throws SQLException, ClassNotFoundException;
 
-    public boolean saveItem(ItemDTO dto) throws SQLException, ClassNotFoundException ;
+    boolean saveItem(ItemDTO dto) throws SQLException, ClassNotFoundException ;
 
-    public boolean existItem(String code) throws SQLException, ClassNotFoundException ;
+    boolean existItem(String code) throws SQLException, ClassNotFoundException ;
 
-    public String genarateNewId() throws SQLException, ClassNotFoundException ;
+    String genarateNewId() throws SQLException, ClassNotFoundException ;
 
-    public boolean updateItem(ItemDTO dto) throws SQLException, ClassNotFoundException ;
+    boolean updateItem(ItemDTO dto) throws SQLException, ClassNotFoundException ;
+
+    ItemDTO searchItem(String newItemCode) throws SQLException, ClassNotFoundException;
+
+    boolean checkItem(String code) throws SQLException, ClassNotFoundException;
+
+    ObservableList<String> getAllItemCode() throws SQLException, ClassNotFoundException;
+
+    boolean updateProducts(List<OrderDetailDTO> orderDetails) throws SQLException, ClassNotFoundException;
+
+    ItemDTO findItem(String code) throws SQLException, ClassNotFoundException;
 }

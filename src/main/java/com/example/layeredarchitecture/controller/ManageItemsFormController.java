@@ -254,7 +254,7 @@ public class ManageItemsFormController {
 //        PreparedStatement pstm = connection.prepareStatement("SELECT code FROM Item WHERE code=?");
 //        pstm.setString(1, code);
 //        return pstm.executeQuery().next();
-        
+
         return itemDAO.existItem(code);
 
     }
