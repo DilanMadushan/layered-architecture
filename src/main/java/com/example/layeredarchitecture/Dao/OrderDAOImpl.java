@@ -19,6 +19,7 @@ public class OrderDAOImpl implements  OrderDAO{
     @Override
     public boolean saveOrder(String orderId, LocalDate orderDate, String customerId) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getDbConnection().getConnection();
+        connection.setAutoCommit(false);
         PreparedStatement stm = connection.prepareStatement("INSERT INTO `Orders` (oid, date, customerID) VALUES (?,?,?)");
         stm.setString(1, orderId);
         stm.setDate(2, Date.valueOf(orderDate));

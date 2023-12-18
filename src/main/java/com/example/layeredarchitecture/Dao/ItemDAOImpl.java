@@ -124,6 +124,9 @@ public class ItemDAOImpl implements  ItemDAO {
                 connection.rollback();
                 connection.setAutoCommit(true);
                 return false;
+            }else{
+                connection.commit();
+                connection.setAutoCommit(true);
             }
         }
 

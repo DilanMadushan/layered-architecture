@@ -56,8 +56,7 @@ public class PlaceOrderFormController {
     private CustomerDAO customerDAO = new CustomerDAOImpl();
     private ItemDAO itemDAO = new ItemDAOImpl();
     private OrderDAO orderDAO = new OrderDAOImpl();
-
-    private PlaceOrderDAO placeOrderDAO = new PlaceOrderDAOImpl();
+    private OrderDetailsDAO orderDetailsDAO = new OrderDetailsDAOImpl();
 
     public void initialize() throws SQLException, ClassNotFoundException {
 
@@ -350,8 +349,27 @@ public class PlaceOrderFormController {
 
         /*Transaction*/
         try {
-            return placeOrderDAO.placeOrder(orderId, orderDate, customerId, orderDetails);
 
+            boolean isOrderSaved = orderDAO.saveOrder(orderId,orderDate,customerId);
+
+            if (isOrderSaved) {
+                boolean isODetailsSaved= orderDetailsDAO.saveOredrDetils(orderId,orderDetails);
+
+                if (isODetailsSaved) {
+                    boolean isItemUpdate = itemDAO.updateProducts(orderDetails);
+
+                    if (isItemUpdate) {
+                        return true;
+
+                    }else {
+                        return false;
+                    }
+                }else {
+                    return false;
+                }
+            }else {
+                return false;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
