@@ -81,7 +81,7 @@ public class ManageItemsFormController {
 //                tblItems.getItems().add(new ItemTM(rst.getString("code"), rst.getString("description"), rst.getBigDecimal("unitPrice"), rst.getInt("qtyOnHand")));
 //            }
 
-            ArrayList<ItemDTO> dtoList=itemDAO.loadAllItems();
+            ArrayList<ItemDTO> dtoList=itemDAO.getAll();
 
             for (ItemDTO dto: dtoList) {
                 tblItems.getItems().add(new ItemTM(dto.getCode(),dto.getDescription(),dto.getUnitPrice(),dto.getQtyOnHand()));
@@ -148,7 +148,7 @@ public class ManageItemsFormController {
 //            pstm.setString(1, code);
 //            pstm.executeUpdate();
 
-            boolean isDelete = itemDAO.deleteItem(code);
+            boolean isDelete = itemDAO.delete(code);
 
             if (isDelete) {
                 tblItems.getItems().remove(tblItems.getSelectionModel().getSelectedItem());
@@ -199,9 +199,7 @@ public class ManageItemsFormController {
 //                pstm.executeUpdate();
 
 
-                ItemDTO dto = new ItemDTO(code,description,unitPrice,qtyOnHand);
-
-                boolean isSaved = itemDAO.saveItem(dto);
+                boolean isSaved = itemDAO.save(new ItemDTO(code,description,unitPrice,qtyOnHand));
 
                 if (isSaved) {
                     tblItems.getItems().add(new ItemTM(code, description, unitPrice, qtyOnHand));
@@ -229,7 +227,7 @@ public class ManageItemsFormController {
 
                 ItemDTO dto = new ItemDTO(code,description,unitPrice,qtyOnHand);
 
-                boolean isUpdated = itemDAO.updateItem(dto);
+                boolean isUpdated = itemDAO.update(dto);
 
                 if (isUpdated) {
                     ItemTM selectedItem = tblItems.getSelectionModel().getSelectedItem();
@@ -255,7 +253,7 @@ public class ManageItemsFormController {
 //        pstm.setString(1, code);
 //        return pstm.executeQuery().next();
 
-        return itemDAO.existItem(code);
+        return itemDAO.exist(code);
 
     }
 
@@ -271,7 +269,7 @@ public class ManageItemsFormController {
 //            } else {
 //                return "I00-001";
 //            }
-            return itemDAO.genarateNewId();
+            return itemDAO.genarateId();
 
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();

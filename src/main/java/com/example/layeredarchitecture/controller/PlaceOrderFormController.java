@@ -4,6 +4,7 @@ import com.example.layeredarchitecture.Dao.*;
 import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import com.example.layeredarchitecture.model.ItemDTO;
+import com.example.layeredarchitecture.model.OrderDTO;
 import com.example.layeredarchitecture.model.OrderDetailDTO;
 import com.example.layeredarchitecture.view.tdm.OrderDetailTM;
 import com.jfoenix.controls.JFXButton;
@@ -102,7 +103,7 @@ public class PlaceOrderFormController {
             if (newValue != null) {
                 try {
                     /*Search Customer*/
-                    CustomerDTO dto = customerDAO.serchCustomer(newValue);
+                    CustomerDTO dto = customerDAO.search(newValue);
                     try {
                         if (!existCustomer(newValue + "")) {
 //                            "There is no such customer associated with the id " + id
@@ -146,7 +147,7 @@ public class PlaceOrderFormController {
 //                    ItemDTO item = new ItemDTO(newItemCode + "", rst.getString("description"), rst.getBigDecimal("unitPrice"), rst.getInt("qtyOnHand"));
 //
 
-                    ItemDTO dto = itemDAO.searchItem(newItemCode);
+                    ItemDTO dto = itemDAO.search(newItemCode);
 
                     if (dto != null) {
                         txtDescription.setText(dto.getDescription());
@@ -197,7 +198,7 @@ public class PlaceOrderFormController {
 //        PreparedStatement pstm = connection.prepareStatement("SELECT code FROM Item WHERE code=?");
 //        pstm.setString(1, code);
 //        return pstm.executeQuery().next();
-        return itemDAO.checkItem(code);
+        return itemDAO.exist(code);
 
     }
 
@@ -206,12 +207,12 @@ public class PlaceOrderFormController {
 //        PreparedStatement pstm = connection.prepareStatement("SELECT id FROM Customer WHERE id=?");
 //        pstm.setString(1, id);
 //        return pstm.executeQuery().next();
-        return customerDAO.checkCustomer(id);
+        return customerDAO.exist(id);
     }
 
     public String generateNewOrderId() {
         try {
-            return orderDAO.generateNewOrderId();
+            return orderDAO.genarateId();
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to generate a new order id").show();
         } catch (ClassNotFoundException e) {
@@ -227,7 +228,12 @@ public class PlaceOrderFormController {
 //            Statement stm = connection.createStatement();
 //            ResultSet rst = stm.executeQuery("SELECT * FROM Customer");
 
-            ObservableList<String> ids = customerDAO.getAllId();
+            ObservableList<String> ids = FXCollections.observableArrayList();
+            ArrayList<CustomerDTO> dto = customerDAO.getAll();
+
+            for (CustomerDTO set: dto) {
+                ids.add(set.getId());
+            }
 
             if (ids != null) {
                 cmbCustomerId.setItems(ids);
@@ -247,10 +253,16 @@ public class PlaceOrderFormController {
 //            Statement stm = connection.createStatement();
 //            ResultSet rst = stm.executeQuery("SELECT * FROM Item");
 
-            ObservableList<String> codes = itemDAO.getAllItemCode();
+            ArrayList<ItemDTO> codes = itemDAO.getAll();
+
+            ObservableList<String> codeSet = FXCollections.observableArrayList();
+
+            for (ItemDTO set: codes) {
+                codeSet.add(set.getCode());
+            }
 
             if (codes != null) {
-                cmbItemCode.setItems(codes);
+                cmbItemCode.setItems(codeSet);
             }
 
         } catch (SQLException e) {
@@ -348,27 +360,75 @@ public class PlaceOrderFormController {
     public boolean saveOrder(String orderId, LocalDate orderDate, String customerId, List<OrderDetailDTO> orderDetails) {
 
         /*Transaction*/
+        Connection connection = null;
+
         try {
 
-            boolean isOrderSaved = orderDAO.saveOrder(orderId,orderDate,customerId);
+            connection = DBConnection.getDbConnection().getConnection();
+            connection.setAutoCommit(false);
+
+//            boolean isOrderSaved = orderDAO.saveOrder(orderId,orderDate,customerId);
+//
+//            if (isOrderSaved) {
+//                boolean isODetailsSaved= orderDetailsDAO.saveOredrDetils(orderId,orderDetails);
+//
+//                if (isODetailsSaved) {
+//                    boolean isItemUpdate = itemDAO.updateProducts(orderDetails);
+//
+//                    if (isItemUpdate) {
+//                        return true;
+//
+//                    }else {
+//                        return false;
+//                    }
+//                }else {
+//                    return false;
+//                }
+//            }else {
+//                return false;
+//            }
+            boolean isOrderSaved = orderDAO.save(new OrderDTO(orderId,orderDate,customerId));
+
+
+            boolean isODetailsSaved= false;
 
             if (isOrderSaved) {
-                boolean isODetailsSaved= orderDetailsDAO.saveOredrDetils(orderId,orderDetails);
+                for (OrderDetailDTO dto: orderDetails) {
+                    dto.setOrderId(orderId);
+                    isODetailsSaved= orderDetailsDAO.save(dto);
+                }
+
+
+                boolean isItemUpdate = false;
 
                 if (isODetailsSaved) {
-                    boolean isItemUpdate = itemDAO.updateProducts(orderDetails);
+                    for (OrderDetailDTO dto: orderDetails) {
+
+                        ItemDTO item = itemDAO.search(dto.getItemCode());
+                        item.setQtyOnHand(item.getQtyOnHand() - dto.getQty());
+
+                        isItemUpdate = itemDAO.update(new ItemDTO(item.getCode(),item.getDescription(),item.getUnitPrice(), item.getQtyOnHand()));
+                    }
 
                     if (isItemUpdate) {
+                        connection.commit();
+                        connection.setAutoCommit(true);
                         return true;
 
                     }else {
+                        connection.rollback();
+                        connection.setAutoCommit(true);
                         return false;
                     }
                 }else {
+                    connection.rollback();
+                    connection.setAutoCommit(true);
                     return false;
                 }
             }else {
-                return false;
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                    return false;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
