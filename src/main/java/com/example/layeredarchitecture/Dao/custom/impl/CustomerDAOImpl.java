@@ -1,16 +1,15 @@
-package com.example.layeredarchitecture.Dao;
+package com.example.layeredarchitecture.Dao.custom.impl;
 
-import com.example.layeredarchitecture.db.DBConnection;
+import com.example.layeredarchitecture.Dao.SQLUtil;
+import com.example.layeredarchitecture.Dao.custom.CustomerDAO;
 import com.example.layeredarchitecture.model.CustomerDTO;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class CustomerDAOImpl implements CustomerDAO{
+public class CustomerDAOImpl implements CustomerDAO {
 
-    private  SQLUtil sqlUtil = new SQLUtil();
+    private SQLUtil sqlUtil = new SQLUtil();
     public ArrayList<CustomerDTO> getAll() throws SQLException, ClassNotFoundException {
 //        Connection connection = DBConnection.getDbConnection().getConnection();
 //        Statement stm = connection.createStatement();

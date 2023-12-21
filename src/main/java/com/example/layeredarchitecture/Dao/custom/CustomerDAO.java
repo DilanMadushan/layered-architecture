@@ -1,5 +1,6 @@
-package com.example.layeredarchitecture.Dao;
+package com.example.layeredarchitecture.Dao.custom;
 
+import com.example.layeredarchitecture.Dao.CrudDAO;
 import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import javafx.collections.ObservableList;
@@ -7,7 +8,7 @@ import javafx.collections.ObservableList;
 import java.sql.*;
 import java.util.ArrayList;
 
-public interface CustomerDAO extends CrudDAO <CustomerDTO> {
+public interface CustomerDAO extends CrudDAO<CustomerDTO> {
 
 //     ArrayList<CustomerDTO> getAllCustomers() throws SQLException, ClassNotFoundException;
 //
@@ -17,7 +18,7 @@ public interface CustomerDAO extends CrudDAO <CustomerDTO> {
 //
 //     boolean updateCustomer(CustomerDTO dto) throws SQLException, ClassNotFoundException ;
 //
-//
+//\
 //     boolean deleteCustomer(String id) throws SQLException, ClassNotFoundException ;
 //
 //

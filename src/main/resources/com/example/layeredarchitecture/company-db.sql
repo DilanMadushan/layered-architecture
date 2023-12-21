@@ -73,3 +73,8 @@ CREATE TABLE `OrderDetails` (
   CONSTRAINT `OrderDetails_ibfk_2` FOREIGN KEY (`itemCode`) REFERENCES `Item` (`code`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+SELECT c.name,c.address,o.id,o.date
+FROM Customer c
+JOIN Orders O ON c.id = O.customerID
+WHERE id = ?

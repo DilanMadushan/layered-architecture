@@ -1,5 +1,6 @@
-package com.example.layeredarchitecture.Dao;
+package com.example.layeredarchitecture.Dao.custom;
 
+import com.example.layeredarchitecture.Dao.CrudDAO;
 import com.example.layeredarchitecture.model.ItemDTO;
 import com.example.layeredarchitecture.model.OrderDetailDTO;
 import javafx.collections.ObservableList;
@@ -8,7 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface ItemDAO extends CrudDAO <ItemDTO>{
+public interface ItemDAO extends CrudDAO<ItemDTO> {
 //    ArrayList<ItemDTO> getAllItems() throws SQLException, ClassNotFoundException ;
 //
 //    boolean deleteItem(String code) throws SQLException, ClassNotFoundException;
