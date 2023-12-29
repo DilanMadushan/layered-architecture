@@ -1,11 +1,14 @@
 package com.example.layeredarchitecture.controller;
 
+import com.example.layeredarchitecture.Dao.DAOFactory;
 import com.example.layeredarchitecture.Dao.custom.CustomerDAO;
-import com.example.layeredarchitecture.Dao.custom.impl.CustomerDAOImpl;
 import com.example.layeredarchitecture.Dao.custom.QuereyDAO;
-import com.example.layeredarchitecture.Dao.custom.impl.QueryDAOImpl;
-import com.example.layeredarchitecture.model.CusOrderOTO;
-import com.example.layeredarchitecture.model.CustomerDTO;
+import com.example.layeredarchitecture.DTO.CusOrderOTO;
+import com.example.layeredarchitecture.DTO.CustomerDTO;
+import com.example.layeredarchitecture.bo.BOFactory;
+import com.example.layeredarchitecture.bo.custom.CustomerBO;
+import com.example.layeredarchitecture.bo.custom.impl.CustomerBoImpl;
+import com.example.layeredarchitecture.bo.custom.impl.QuereyBOImpl;
 import com.example.layeredarchitecture.view.tdm.CusOrderTM;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.application.Platform;
@@ -33,7 +36,9 @@ import java.util.ResourceBundle;
 
 public class SearchOrderFormController implements Initializable {
 
+    @FXML
     public TableView tbleCusOrderDetails;
+
     @FXML
     private JFXComboBox cmbCusId;
 
@@ -52,9 +57,9 @@ public class SearchOrderFormController implements Initializable {
     @FXML
     private AnchorPane root;
 
-    CustomerDAO customerDAO = new CustomerDAOImpl();
+    CustomerBoImpl customerBO = (CustomerBoImpl) BOFactory.getBoFactory().getBo(BOFactory.BOTypes.CUSTOMER);
 
-    QuereyDAO quereyDAO = new QueryDAOImpl();
+    QuereyBOImpl quereyBO = (QuereyBOImpl) BOFactory.boFactory.getBo(BOFactory.BOTypes.QUEREY);
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadAllCustomers();
@@ -71,7 +76,7 @@ public class SearchOrderFormController implements Initializable {
 
     private void loadAllCustomers() {
         try {
-            ArrayList<CustomerDTO> dto = customerDAO.getAll();
+            ArrayList<CustomerDTO> dto = customerBO.getAllCustomer();
             ObservableList<String> names = FXCollections.observableArrayList();
 
             for (CustomerDTO List: dto) {
@@ -107,7 +112,7 @@ public class SearchOrderFormController implements Initializable {
         String id = (String) cmbCusId.getValue();
 
         try {
-            ArrayList<CusOrderOTO> dtoList = quereyDAO.getAll(id);
+            ArrayList<CusOrderOTO> dtoList = quereyBO.getAll(id);
 
             ObservableList<CusOrderTM> obList = FXCollections.observableArrayList();
 

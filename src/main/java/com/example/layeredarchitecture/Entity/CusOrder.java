@@ -1,19 +1,12 @@
-package com.example.layeredarchitecture.model;
+package com.example.layeredarchitecture.Entity;
 
 import java.time.LocalDate;
 
-public class CusOrderOTO {
+public class CusOrder {
     private String name;
     private String address;
     private String Oid;
     private LocalDate date;
-
-    public CusOrderOTO(String name, String address, String oid, LocalDate date) {
-        this.name = name;
-        this.address = address;
-        Oid = oid;
-        this.date = date;
-    }
 
     public String getName() {
         return name;
@@ -44,6 +37,16 @@ public class CusOrderOTO {
     }
 
     public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public CusOrder() {
+    }
+
+    public CusOrder(String name, String address, String oid, LocalDate date) {
+        this.name = name;
+        this.address = address;
+        Oid = oid;
         this.date = date;
     }
 }

@@ -1,17 +1,11 @@
-package com.example.layeredarchitecture.model;
+package com.example.layeredarchitecture.Entity;
 
-import java.io.Serializable;
-
-
-public class CustomerDTO implements Serializable {
+public class Customer {
     private String id;
     private String name;
     private String address;
 
-    public CustomerDTO() {
-    }
-
-    public CustomerDTO(String id, String name, String address) {
+    public Customer(String id, String name, String address) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -41,12 +35,6 @@ public class CustomerDTO implements Serializable {
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return "CustomerDTO{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+    public Customer() {
     }
 }
